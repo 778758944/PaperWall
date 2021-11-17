@@ -89,9 +89,22 @@
 
 -(void) testRgb
 {
-    unsigned char * p = [_selectImage getRgbData];
+//    unsigned char * p = [_selectImage getRgbData];
     CGFloat width = _selectImage.size.width;
     CGFloat height = _selectImage.size.height;
+    if (width > height) {
+        if (height > 1080) {
+            width = width * (1080/height);
+            height = 1080;
+        }
+    } else {
+        if (width > 1080) {
+            height = height * (1080/width);
+            width = 1080;
+        }
+    }
+    
+    unsigned char * p = [_selectImage getRgbDataWithSize:CGSizeMake(width, height)];
     
     uint8_t * q_data = getQuantizerRgbData(p, width * height * 4, 256);
     /*
@@ -108,19 +121,21 @@
     NSLog(@"compress size: %lu, jpg_data size: %lu", png_data.length, jpg_data.length);
     
     NSURL * url = [[self.fileManager URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
-    NSURL * jpg_url = [url URLByAppendingPathComponent:@"a.jpg"];
+    NSURL * jpg_url = [url URLByAppendingPathComponent:@"a.png"];
+    NSLog(@"jpg url: %@", jpg_url);
     
-    if ([jpg_data writeToURL:url atomically:YES]) {
+    
+    if ([png_data writeToURL:jpg_url atomically:YES]) {
         NSLog(@"success: %@", jpg_url);
     }
     
-    NSData * rgbData = [NSData dataWithBytes:q_data length:width * height * 4];
+//    NSData * rgbData = [NSData dataWithBytes:q_data length:width * height * 4];
     
-    NSURL * bitmapUrl = [url URLByAppendingPathComponent:@"a.bitmap"];
+//    NSURL * bitmapUrl = [url URLByAppendingPathComponent:@"a.bitmap"];
     
-    if ([rgbData writeToURL:bitmapUrl atomically:YES]) {
-        NSLog(@"success: %@", bitmapUrl);
-    }
+//    if ([rgbData writeToURL:bitmapUrl atomically:YES]) {
+//        NSLog(@"success: %@", bitmapUrl);
+//    }
     
     
     

@@ -83,4 +83,37 @@
     
 }
 
+-(unsigned char *) getRgbDataWithSize: (CGSize) size
+{
+//    CGSize imageSize = self.size;
+    CGImageRef imageRef = self.CGImage;
+    NSLog(@"image size: %@", [NSValue valueWithCGSize:size]);
+    CGFloat m_width = size.width;
+    CGFloat m_height = size.height;
+    // bitmap config
+    NSUInteger bytesPerPixel = 4;
+    NSUInteger bitsPerComponent = 8;
+    NSUInteger bytesPerRow = bytesPerPixel * m_width;
+    
+    unsigned char * p = (unsigned char *) calloc(m_width * m_height * bytesPerPixel, sizeof(unsigned char));
+    
+    // create Color Space
+    CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
+    
+    // create bitmap context
+    CGContextRef bitmapRef = CGBitmapContextCreate(p, m_width, m_height, bitsPerComponent, bytesPerRow, colorSpace, kCGImageAlphaNoneSkipLast | kCGBitmapByteOrder32Big);
+    
+    // draw image
+    CGContextDrawImage(bitmapRef, CGRectMake(0, 0, m_width, m_height), imageRef);
+    
+    //    p = CGBitmapContextGetData(bitmapRef);
+    
+    //memory recycle
+    CGContextRelease(bitmapRef);
+    CGColorSpaceRelease(colorSpace);
+    CGImageRelease(imageRef);
+    
+    return p;
+}
+
 @end

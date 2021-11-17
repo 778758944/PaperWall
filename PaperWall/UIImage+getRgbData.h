@@ -13,6 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 @interface UIImage (getRgbData)
 +(UIImage *) imageWithRgbData: (unsigned char *) rawData width: (CGFloat) w height: (CGFloat) h;
 -(unsigned char *) getRgbData;
+-(unsigned char *) getRgbDataWithSize: (CGSize) size;
 @end
 
 NS_ASSUME_NONNULL_END
